@@ -13,7 +13,7 @@ $ pip install -r requirements.txt
 `.env` и поместить в него Ваш `generic access token (GAT)` 
 от сервиса `bit.ly`:  
 ```bash
-$ echo ACCESS_TOKEN=<your_GAT> > ./clicks_counter/.env 
+$ echo ACCESS_TOKEN=here_enter_your_GAT > ./clicks_counter/.env 
 ```
 После запуска:  
 ```bash
