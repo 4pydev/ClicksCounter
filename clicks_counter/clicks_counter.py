@@ -1,5 +1,6 @@
 import os
 from os.path import dirname, join
+from urllib.parse import urlparse
 from dotenv import load_dotenv
 import requests
 
@@ -16,7 +17,10 @@ def print_user_info():
     }
 
     response = requests.get(url, headers=headers)
-    print(response.text)
+    if response.ok:
+        print(response.text)
+    else:
+        print('Status code: {}. Something is wrong!'.format(response.status_code))
 
 
 def get_bitlink(regular_link, token=access_token):
@@ -35,14 +39,37 @@ def get_bitlink(regular_link, token=access_token):
         headers=headers,
     )
 
-    if response.ok:
-        return response.json()['link']
-    else:
+    if not response.ok:
         return None
+
+    return response.json()['link']
+
+
+def is_bitlink_exists(bitlink, token=access_token):
+    bitlink_parse_result = urlparse(bitlink)
+    bitlink = '{}{}'.format(
+        bitlink_parse_result.netloc,
+        bitlink_parse_result.path
+    )
+
+    url = f'https://api-ssl.bitly.com/v4/bitlinks/{bitlink}'
+    headers = {
+        'Authorization': token,
+    }
+
+    response = requests.get(
+        url = url,
+        headers=headers
+    )
+    return response.ok
 
 
 def get_clicks_count(bitlink, token=access_token):
-    bitlink = bitlink.replace('http://', '')
+    bitlink_parse_result = urlparse(bitlink)
+    bitlink = '{}{}'.format(
+        bitlink_parse_result.netloc,
+        bitlink_parse_result.path
+    )
 
     url = f'https://api-ssl.bitly.com/v4/bitlinks/{bitlink}/clicks/summary'
     headers = {
@@ -58,6 +85,8 @@ def get_clicks_count(bitlink, token=access_token):
         params=params,
         headers=headers
     )
+    if not response.ok:
+        return None
     try:
         return response.json()['total_clicks']
     except KeyError:
@@ -67,18 +96,14 @@ def get_clicks_count(bitlink, token=access_token):
 def main():
     user_link = input('Enter a link: ')
 
-    if user_link.startswith('http://bit.ly'):
-        total_clicks = get_clicks_count(user_link)
-        if total_clicks is None:
-            print('Error: Invalid link.')
-        else:
-            print('Total clicks:', total_clicks)
-    else:
-        bitlink = get_bitlink(user_link)
-        if bitlink is None:
-            print('Error: Invalid bitlink.')
-        else:
-            print('Bitlink:', bitlink)
+    if is_bitlink_exists(user_link):
+        print('Total clicks:', get_clicks_count(user_link))
+        return
+
+    bitlink = get_bitlink(user_link)
+    print('Error: Invalid bitlink.') if bitlink is None \
+        else print('Bitlink:', bitlink)
+    return
 
 
 if __name__ == '__main__':
