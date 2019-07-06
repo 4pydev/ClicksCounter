@@ -45,14 +45,18 @@ def get_bitlink(regular_link, token=access_token):
     return response.json()['link']
 
 
-def is_bitlink_exists(bitlink, token=access_token):
+def get_bitlink_id(bitlink):
     bitlink_parse_result = urlparse(bitlink)
-    bitlink = '{}{}'.format(
+    return '{}{}'.format(
         bitlink_parse_result.netloc,
         bitlink_parse_result.path
     )
 
-    url = f'https://api-ssl.bitly.com/v4/bitlinks/{bitlink}'
+
+def is_bitlink_exists(bitlink, token=access_token):
+    bitlink_id = get_bitlink_id(bitlink)
+
+    url = f'https://api-ssl.bitly.com/v4/bitlinks/{bitlink_id}'
     headers = {
         'Authorization': token,
     }
@@ -65,13 +69,9 @@ def is_bitlink_exists(bitlink, token=access_token):
 
 
 def get_clicks_count(bitlink, token=access_token):
-    bitlink_parse_result = urlparse(bitlink)
-    bitlink = '{}{}'.format(
-        bitlink_parse_result.netloc,
-        bitlink_parse_result.path
-    )
+    bitlink_id = get_bitlink_id(bitlink)
 
-    url = f'https://api-ssl.bitly.com/v4/bitlinks/{bitlink}/clicks/summary'
+    url = f'https://api-ssl.bitly.com/v4/bitlinks/{bitlink_id}/clicks/summary'
     headers = {
         'Authorization': token,
     }
