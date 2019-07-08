@@ -1,5 +1,6 @@
 import os
 from os.path import dirname, join
+import argparse
 from urllib.parse import urlparse
 from dotenv import load_dotenv
 import requests
@@ -8,6 +9,14 @@ import requests
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 access_token = 'Bearer {}'.format(os.getenv('ACCESS_TOKEN'))
+
+
+def create_parser():
+    parser = argparse.ArgumentParser(
+        description="You can enter a 'short' or regular link")
+    parser.add_argument("user_link", nargs="?", help="'Short' or regular link")
+
+    return parser
 
 
 def print_user_info():
@@ -94,15 +103,18 @@ def get_clicks_count(bitlink, token=access_token):
 
 
 def main():
-    user_link = input('Enter a link: ')
+    parser = create_parser()
+    args = parser.parse_args()
+
+    user_link = args.user_link if args.user_link else input('Введите ссылку: ')
 
     if is_bitlink_exists(user_link):
-        print('Total clicks:', get_clicks_count(user_link))
+        print('Количество переходов по ссылке битли:', get_clicks_count(user_link))
         return
 
     bitlink = get_bitlink(user_link)
-    print('Error: Invalid bitlink.') if bitlink is None \
-        else print('Bitlink:', bitlink)
+    print('Ошибка! Неправильная "короткая" ссылка.') if bitlink is None \
+        else print(bitlink)
     return
 
 
