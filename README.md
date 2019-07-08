@@ -14,7 +14,8 @@ $ pip install -r requirements.txt
 от сервиса `bit.ly`:  
 ```bash
 $ echo ACCESS_TOKEN=here_enter_your_GAT > ./clicks_counter/.env 
-```
+```  
+
 После запуска:  
 ```bash
 $ python3 ./clicks_counter/clicks_counter.py
@@ -23,7 +24,13 @@ $ python3 ./clicks_counter/clicks_counter.py
 "короткая" ссылка типа `http://bit.ly/JHGcjx2j`, то 
 скрипт вернет общее количество кликов по данной ссылке.  
 Если введена обычная (полная) то будет выведена "короткая" 
-ссылка.
+ссылка.  
+Вы также можете ввести ссылку, как аргумент командной 
+строки:  
+```bash
+$ python3 ./clicks_counter/clicks_counter.py http://bit.ly/JHGcjx2j
+```  
+
 ## Цели проекта
 Код создан в учебных целях. 
 В рамках учебного курса по веб-разработке - 
