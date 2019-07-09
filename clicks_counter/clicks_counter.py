@@ -19,10 +19,10 @@ def create_parser():
     return parser
 
 
-def print_user_info():
+def print_user_info(token=ACCESS_TOKEN):
     url = 'https://api-ssl.bitly.com/v4/user'
     headers = {
-        'Authorization': ACCESS_TOKEN,
+        'Authorization': token,
     }
 
     response = requests.get(url, headers=headers)
