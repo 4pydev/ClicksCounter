@@ -8,7 +8,7 @@ import requests
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
-access_token = 'Bearer {}'.format(os.getenv('ACCESS_TOKEN'))
+ACCESS_TOKEN = 'Bearer {}'.format(os.getenv('ACCESS_TOKEN'))
 
 
 def create_parser():
@@ -22,7 +22,7 @@ def create_parser():
 def print_user_info():
     url = 'https://api-ssl.bitly.com/v4/user'
     headers = {
-        'Authorization': access_token,
+        'Authorization': ACCESS_TOKEN,
     }
 
     response = requests.get(url, headers=headers)
@@ -32,7 +32,7 @@ def print_user_info():
         print('Status code: {}. Something is wrong!'.format(response.status_code))
 
 
-def get_bitlink(regular_link, token=access_token):
+def get_bitlink(regular_link, token=ACCESS_TOKEN):
     url = 'https://api-ssl.bitly.com/v4/bitlinks'
     headers = {
         'Authorization': token,
@@ -62,7 +62,7 @@ def get_bitlink_id(bitlink):
     )
 
 
-def is_bitlink_exists(bitlink, token=access_token):
+def is_bitlink_exists(bitlink, token=ACCESS_TOKEN):
     bitlink_id = get_bitlink_id(bitlink)
 
     url = f'https://api-ssl.bitly.com/v4/bitlinks/{bitlink_id}'
@@ -77,7 +77,7 @@ def is_bitlink_exists(bitlink, token=access_token):
     return response.ok
 
 
-def get_clicks_count(bitlink, token=access_token):
+def get_clicks_count(bitlink, token=ACCESS_TOKEN):
     bitlink_id = get_bitlink_id(bitlink)
 
     url = f'https://api-ssl.bitly.com/v4/bitlinks/{bitlink_id}/clicks/summary'
